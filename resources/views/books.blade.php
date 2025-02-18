@@ -3,20 +3,20 @@
 @section('title',"Books")
 
 @section('content')
-
+ 
  <h1 class="text-3xl">Book</h1>
 
- <form method="GET" class="mt-10 w-full flex gap-x-2  " >
-    <input type="text" placeholder="Search" name="title" class="flex-grow  rounded-md shadow-md border-slate-300 ouline-none  " >
+ <form method="GET" class="mt-10 w-full flex gap-x-2" action="{{route('books.index')}}" >
+    <input type="text" placeholder="Search" name="title" class="flex-grow  rounded-md shadow-md border-slate-300 ouline-none  " value="{{request()->query('title')}}">
     <button class="bg-white rounded-md  px-2 text-gray-700 border border-slate-300 ">Search</button>
     <a href="{{route('books.index')}}" class="bg-white rounded-md  px-2 text-gray-700 flex border items-center border-slate-300 ">Clear</a>
  </form>
 
 
  <div class="bg-slate-200 h-20 mt-5 rounded-md flex justify-between w-full p-2 gap-x-3">
-
+ 
     @forelse ($filters as $filter )
-       <div class="text-wrap flex-1 rounded-md p-4 {{$selectedFilter!==$filter ?: "bg-white"}} flex justify-center items-center text-center">{{ snakeToTitleCase($filter)}}</div> 
+       <a href="{{route('books.index',[...request()->query(),'filter' => $filter ])}}" class="text-wrap flex-1 rounded-md p-4 {{$selectedFilter!==$filter ?: "bg-white"}} flex justify-center items-center text-center">{{ snakeToTitleCase($filter) }}</a> 
     @empty
         No filters available!
     @endforelse
@@ -39,7 +39,7 @@
         </div>
     </div>
 @empty
-
+ <div class="mt-10">No Books found!</div>
 @endforelse
 </div>
 

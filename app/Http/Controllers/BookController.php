@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -10,21 +12,31 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $filters = [
-            'latest',
-            'popular_last_month',
-            'popular_last_6_months',
-            'highest_rated_last_month',
-            'hihest_rated_last_6_months'
+            'latest' => fn(Builder $books): Builder => $books->latest(),
+            'popular_last_month' => fn(Builder $books): Builder => $books->popular()->previousMonths(1),
+            'popular_last_6_months' => fn(Builder $books): Builder => $books->popular()->previousMonths(6),
+            'highest_rated_last_month' => fn(Builder $books): Builder => $books->highestRating()->previousMonths(1),
+            'highest_rated_last_6_months' => fn(Builder $books): Builder => $books->highestRating()->previousMonths(6),
         ];
-        $selectedFilter = 'latest';
 
-        $books = Book::withAvg('reviews', 'rating')->withCount('reviews')->paginate(5);
+        $selectedFilter = array_key_exists($request->filter, $filters) ? $request->filter : 'latest';
 
-        return view('books',  ['filters' => $filters, 'selectedFilter' => $selectedFilter, 'books' =>  $books]);
+        $title = $request->get('title', '');
+
+        $books = Book::withAvg('reviews', 'rating')->withCount('reviews')->title($title);
+
+        $books = $filters[$selectedFilter]($books)->paginate(5);
+
+        return view('books', [
+            'filters' => array_keys($filters),
+            'selectedFilter' => $selectedFilter,
+            'books' => $books
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
