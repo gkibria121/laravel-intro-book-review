@@ -21,7 +21,7 @@ class BookController extends Controller
         ];
         $selectedFilter = 'latest';
 
-        $books = Book::withAvg('reviews', 'rating')->withCount('reviews')->get();
+        $books = Book::withAvg('reviews', 'rating')->withCount('reviews')->paginate(5);
 
         return view('books',  ['filters' => $filters, 'selectedFilter' => $selectedFilter, 'books' =>  $books]);
     }

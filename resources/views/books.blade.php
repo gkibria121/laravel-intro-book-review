@@ -32,13 +32,20 @@
             <h2 class="opacity-80">by {{$book->author}}</h2>
         </div>
         <div class="flex  flex-col" >
-            <span>{{round($book->reviews_avg_rating, 1)}}</span>
+             
+            <x-rating :rating="round($book->reviews_avg_rating, 1)">
+            </x-rating>
             <span>out of {{$book->reviews_count}} {{   Str::plural("review",$book->reviews_count) }}</span>
         </div>
     </div>
 @empty
-</div>
+
 @endforelse
+</div>
+
+<nav class="mt-10">
+    {{ $books->links()}}
+</nav>
 
 
 
