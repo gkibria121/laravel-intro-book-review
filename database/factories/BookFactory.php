@@ -17,8 +17,8 @@ class BookFactory extends Factory
     public function definition(): array
     {
         return [
-            'title' => fake()->paragraph(random_int(3, 5)),
-            'author' => fake()->paragraph(random_int(1, 3)),
+            'title' => fake()->sentence(5),
+            'author' => fake()->name,
             'created_at' => fake()->dateTimeBetween('-5 years', 'now'),
             'updated_at' => fake()->dateTimeBetween('-5 years', 'now'),
         ];

@@ -12,8 +12,18 @@ class BookController extends Controller
      */
     public function index()
     {
+        $filters = [
+            'latest',
+            'popular_last_month',
+            'popular_last_6_months',
+            'highest_rated_last_month',
+            'hihest_rated_last_6_months'
+        ];
+        $selectedFilter = 'latest';
 
-        return view('books');
+        $books = Book::withAvg('reviews', 'rating')->withCount('reviews')->get();
+
+        return view('books',  ['filters' => $filters, 'selectedFilter' => $selectedFilter, 'books' =>  $books]);
     }
 
     /**

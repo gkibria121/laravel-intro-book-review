@@ -10,6 +10,8 @@
     </title>
 </head>
 <body>
-    @yield('content')
+    <div class="container  min-w-[50vw] mt-10 min-h-[80vh] p-2 mx-auto" >
+        @yield('content')
+    </div>
 </body>
 </html>
