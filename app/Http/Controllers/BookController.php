@@ -30,7 +30,7 @@ class BookController extends Controller
 
         $books = $filters[$selectedFilter]($books)->paginate(5);
 
-        return view('books', [
+        return view('books.index', [
             'filters' => array_keys($filters),
             'selectedFilter' => $selectedFilter,
             'books' => $books
@@ -59,7 +59,9 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        //
+        $book = $book->load('reviews')->withCount('reviews')->withAvg('reviews', 'rating')->first();
+
+        return view('books.show', ['book' => $book]);
     }
 
     /**

@@ -26,7 +26,7 @@
 
 <div class="flex gap-y-4 flex-col mt-5"> 
 @forelse ($books as $book)
-    <div class="bg-white shadow-md p-4 border border-slate-300 rounded-md flex justify-between">
+    <a href="{{route('books.show',['book' => 1])}}" class="bg-white shadow-md p-4 border hover:-translate-y-1 cursor-pointer border-slate-300 rounded-md flex justify-between">
         <div>
             <h1 class="font-bold">{{$book->title}}</h1>
             <h2 class="opacity-80">by {{$book->author}}</h2>
@@ -37,7 +37,7 @@
             </x-rating>
             <span>out of {{$book->reviews_count}} {{   Str::plural("review",$book->reviews_count) }}</span>
         </div>
-    </div>
+    </a>
 @empty
  <div class="mt-10">No Books found!</div>
 @endforelse
