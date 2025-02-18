@@ -6,6 +6,7 @@ use App\Models\Book;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class BookController extends Controller
 {
@@ -28,7 +29,7 @@ class BookController extends Controller
 
         $books = Book::withAvg('reviews', 'rating')->withCount('reviews')->title($title);
 
-        $books = $filters[$selectedFilter]($books)->paginate(5);
+        $books = Cache::remember("books $title $selectedFilter", 3600, fn() => $filters[$selectedFilter]($books)->paginate(5));
 
         return view('books.index', [
             'filters' => array_keys($filters),
@@ -41,10 +42,7 @@ class BookController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -59,10 +57,13 @@ class BookController extends Controller
      */
     public function show(Book $book)
     {
-        $book = $book->load('reviews')->withCount('reviews')->withAvg('reviews', 'rating')->first();
+        $book = Cache::remember("book:{$book->id}", 3600, function () use ($book) {
+            return $book->load('reviews')->loadCount('reviews')->loadAvg('reviews', 'rating');
+        });
 
         return view('books.show', ['book' => $book]);
     }
+
 
     /**
      * Show the form for editing the specified resource.

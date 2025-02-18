@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Book;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class ReviewController extends Controller
 {
@@ -35,6 +36,7 @@ class ReviewController extends Controller
         ]);
 
         $book->reviews()->create($reveiew);
+        Cache::forget("book:{$book->id}");
         return redirect()->route('books.show', ['book' => $book]);
     }
 
